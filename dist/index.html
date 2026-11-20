@@ -1,0 +1,247 @@
+<!doctype html>
+<html lang="en">
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <meta name="description" content="Explore half-range Fourier sine and cosine series, approximation error, and heat conduction through an everyday countertop scenario.">
+  <title>Half-Range Fourier Explorer</title>
+  <link rel="stylesheet" href="styles.css">
+</head>
+<body>
+  <a class="skip-link" href="#main">Skip to content</a>
+  <header class="site-header">
+    <a class="brand" href="#overview" aria-label="Half-Range Fourier Explorer home">
+      <span class="brand-mark" aria-hidden="true">∿</span>
+      <span>Fourier Explorer</span>
+    </a>
+    <nav aria-label="Main navigation">
+      <a href="#overview" data-route-link="overview">Overview</a>
+      <a href="#explorer" data-route-link="explorer">Explorer</a>
+      <a href="#heat" data-route-link="heat">Heat lab</a>
+      <a href="#daily" data-route-link="daily">Daily life</a>
+    </nav>
+  </header>
+
+  <main id="main">
+    <section class="page overview-page" data-route="overview">
+      <div class="hero">
+        <div class="hero-copy">
+          <p class="eyebrow">Applied Mathematics Capstone</p>
+          <h1>See how simple waves rebuild a curved function</h1>
+          <p class="hero-lede">Start with <strong>f(x) = x²</strong> on half an interval. Extend it, approximate it with sines or cosines, measure the error, then use the same modes to watch heat move through a countertop.</p>
+          <div class="hero-actions">
+            <a class="button primary" href="#explorer">Open the explorer</a>
+            <a class="button secondary" href="#daily">Try the hot-pan scenario</a>
+          </div>
+        </div>
+        <div class="wave-visual" aria-hidden="true">
+          <svg viewBox="0 0 720 420" role="img">
+            <defs>
+              <linearGradient id="waveGlow" x1="0" x2="1">
+                <stop stop-color="#67e8f9"/>
+                <stop offset="1" stop-color="#fb7185"/>
+              </linearGradient>
+              <filter id="glow"><feGaussianBlur stdDeviation="10" result="b"/><feMerge><feMergeNode in="b"/><feMergeNode in="SourceGraphic"/></feMerge></filter>
+            </defs>
+            <path class="visual-grid" d="M40 70H680M40 140H680M40 210H680M40 280H680M40 350H680M120 35V385M240 35V385M360 35V385M480 35V385M600 35V385"/>
+            <path class="visual-wave" d="M45 310 C110 65 170 65 235 310 S360 555 425 310 S550 65 675 310"/>
+            <path class="visual-curve" d="M45 335 C180 330 255 295 360 220 C470 140 560 78 675 55"/>
+          </svg>
+        </div>
+      </div>
+
+      <div class="concept-grid">
+        <article>
+          <span class="concept-number">1</span>
+          <h2>Extend</h2>
+          <p>Reflect the half-range function evenly for a cosine series or oddly for a sine series.</p>
+        </article>
+        <article>
+          <span class="concept-number">2</span>
+          <h2>Approximate</h2>
+          <p>Add the first N harmonics. Each term contributes a simple wave with a different frequency.</p>
+        </article>
+        <article>
+          <span class="concept-number">3</span>
+          <h2>Evaluate</h2>
+          <p>Compare the partial sum with x² using RMSE and maximum sampled error.</p>
+        </article>
+      </div>
+
+      <div class="comparison-band">
+        <div>
+          <p class="eyebrow">The central idea</p>
+          <h2>The extension controls the convergence</h2>
+          <p>The even extension joins continuously at ±π, although its slope changes there. Its cosine coefficients fall roughly as 1/n². The odd extension creates a jump at the period boundary, so its sine coefficients fall more slowly and produce Gibbs oscillations.</p>
+        </div>
+        <div class="formula-stack" aria-label="Fourier coefficient formulas">
+          <div><span>Cosine</span><strong>aₙ = 4(−1)ⁿ / n²</strong></div>
+          <div><span>Sine</span><strong>bₙ has a leading 1/n term</strong></div>
+        </div>
+      </div>
+    </section>
+
+    <section class="page" data-route="explorer" hidden>
+      <div class="page-heading">
+        <div>
+          <p class="eyebrow">Half-range approximation</p>
+          <h1>Sine and cosine comparison</h1>
+          <p>Approximate x² on 0 ≤ x ≤ π and watch accuracy change as harmonics are added.</p>
+        </div>
+        <div class="formula-chip">f(x) = x²</div>
+      </div>
+
+      <div class="control-bar" aria-label="Explorer controls">
+        <div class="range-control">
+          <div class="label-row"><label for="n-slider">Number of terms, N</label><output id="n-output" for="n-slider">10</output></div>
+          <input id="n-slider" type="range" min="1" max="50" value="10">
+          <div class="range-ends"><span>1</span><span>50</span></div>
+        </div>
+        <fieldset class="segmented-control">
+          <legend>Visible series</legend>
+          <button type="button" data-series="compare" class="active">Compare</button>
+          <button type="button" data-series="cosine">Cosine</button>
+          <button type="button" data-series="sine">Sine</button>
+        </fieldset>
+      </div>
+
+      <div class="metrics" aria-live="polite">
+        <article class="metric cosine-accent"><span>Cosine RMSE</span><strong id="cos-rmse">0.0000</strong></article>
+        <article class="metric sine-accent"><span>Sine RMSE</span><strong id="sin-rmse">0.0000</strong></article>
+        <article class="metric"><span>Cosine max error</span><strong id="cos-max">0.0000</strong></article>
+        <article class="metric"><span>Sine endpoint error</span><strong id="sin-max">π²</strong></article>
+      </div>
+
+      <div class="chart-grid">
+        <article class="chart-card wide">
+          <div class="chart-heading">
+            <div><h2>Approximation on the half interval</h2><p>Target and N-term partial sums</p></div>
+            <div class="legend" aria-hidden="true"><span class="target">x²</span><span class="cosine">Cosine</span><span class="sine">Sine</span></div>
+          </div>
+          <canvas id="approx-chart" role="img" aria-label="Line chart comparing x squared with sine and cosine Fourier approximations"></canvas>
+        </article>
+        <article class="chart-card">
+          <div class="chart-heading"><div><h2>Error by position</h2><p>Absolute error at the selected N</p></div></div>
+          <canvas id="point-error-chart" role="img" aria-label="Absolute approximation error across the interval"></canvas>
+        </article>
+        <article class="chart-card">
+          <div class="chart-heading"><div><h2>RMSE as N increases</h2><p>Cosine converges faster for this extension</p></div></div>
+          <canvas id="rmse-chart" role="img" aria-label="RMSE against number of terms for sine and cosine series"></canvas>
+        </article>
+      </div>
+
+      <aside class="explanation-note">
+        <strong>Why the sine endpoint never matches:</strong>
+        every term contains sin(nπ), which is zero. Therefore the sine partial sum equals zero at x = π while the target value is π².
+      </aside>
+    </section>
+
+    <section class="page" data-route="heat" hidden>
+      <div class="page-heading">
+        <div>
+          <p class="eyebrow">Heat conduction lab</p>
+          <h1>Watch Fourier modes fade with time</h1>
+          <p>A one-dimensional model shows how a central hot region spreads through an 80 cm surface.</p>
+        </div>
+      </div>
+
+      <div class="control-bar heat-controls">
+        <label class="select-control">Material
+          <select id="heat-material">
+            <option value="wood">Wood</option>
+            <option value="granite" selected>Granite</option>
+            <option value="steel">Steel</option>
+          </select>
+        </label>
+        <fieldset class="segmented-control">
+          <legend>Ends of the surface</legend>
+          <button type="button" data-boundary="fixed" class="active">Cooled ends</button>
+          <button type="button" data-boundary="insulated">Insulated ends</button>
+        </fieldset>
+        <div class="range-control compact">
+          <div class="label-row"><label for="heat-n">Modes</label><output id="heat-n-output" for="heat-n">20</output></div>
+          <input id="heat-n" type="range" min="1" max="50" value="20">
+        </div>
+        <div class="range-control compact">
+          <div class="label-row"><label for="time-slider">Time</label><output id="time-output" for="time-slider">0 min</output></div>
+          <input id="time-slider" type="range" min="0" max="1800" step="10" value="0">
+        </div>
+        <button id="play-heat" type="button" class="button primary compact-button">Play</button>
+      </div>
+
+      <article class="heat-stage">
+        <div class="heat-readout"><span>25°C</span><div id="heat-strip" class="heat-strip" role="img" aria-label="Temperature colour map across the surface"></div><span>180°C</span></div>
+        <canvas id="heat-chart" role="img" aria-label="Temperature across the surface at the selected time"></canvas>
+        <div class="heat-metrics" aria-live="polite">
+          <span>Peak temperature <strong id="peak-temp">180.0°C</strong></span>
+          <span>Boundary model <strong id="boundary-label">Sine · fixed temperature</strong></span>
+        </div>
+      </article>
+
+      <div class="two-column-copy">
+        <article><h2>Cooled ends</h2><p>The temperature difference from the room vanishes at both ends. Sine modes satisfy those boundary values automatically.</p></article>
+        <article><h2>Insulated ends</h2><p>No heat crosses the ends, so the temperature gradient is zero there. Cosine modes satisfy that condition.</p></article>
+      </div>
+      <p class="model-note">Educational model: heat flows in one dimension, material properties are representative, and air convection is omitted.</p>
+    </section>
+
+    <section class="page" data-route="daily" hidden>
+      <div class="page-heading">
+        <div>
+          <p class="eyebrow">Daily-life scenario</p>
+          <h1>A hot pan on a kitchen countertop</h1>
+          <p>Move the pan, choose the countertop, and see how the same Fourier logic predicts the spreading warmth.</p>
+        </div>
+      </div>
+
+      <div class="daily-layout">
+        <article class="kitchen-scene">
+          <div class="wall-copy"><span>Room temperature</span><strong id="daily-clock">0 min</strong></div>
+          <div id="pan" class="pan" aria-hidden="true"><span></span></div>
+          <div id="countertop" class="countertop" role="img" aria-label="Kitchen countertop coloured by temperature"></div>
+          <div class="cabinet-row" aria-hidden="true"><span></span><span></span><span></span></div>
+          <canvas id="daily-chart" role="img" aria-label="Temperature profile beneath the countertop scene"></canvas>
+        </article>
+
+        <aside class="daily-controls">
+          <label class="select-control">Countertop material
+            <select id="daily-material">
+              <option value="wood">Wood</option>
+              <option value="granite" selected>Granite</option>
+              <option value="steel">Steel</option>
+            </select>
+          </label>
+          <div class="range-control compact">
+            <div class="label-row"><label for="pan-position">Pan position</label><output id="pan-position-output">50%</output></div>
+            <input id="pan-position" type="range" min="20" max="80" value="50">
+          </div>
+          <div class="range-control compact">
+            <div class="label-row"><label for="daily-n">Fourier modes</label><output id="daily-n-output">15</output></div>
+            <input id="daily-n" type="range" min="1" max="50" value="15">
+          </div>
+          <div class="range-control compact">
+            <div class="label-row"><label for="daily-time">Elapsed time</label><output id="daily-time-output">0 min</output></div>
+            <input id="daily-time" type="range" min="0" max="1800" step="10" value="0">
+          </div>
+          <fieldset class="segmented-control vertical">
+            <legend>Countertop ends</legend>
+            <button type="button" data-daily-boundary="fixed" class="active">Cooled by surrounding stone</button>
+            <button type="button" data-daily-boundary="insulated">Insulated edge covers</button>
+          </fieldset>
+        </aside>
+      </div>
+
+      <div class="story-grid">
+        <article><p class="eyebrow">What you feel</p><h2>Warmth spreads away from the pan</h2><p>Material near the pan heats first. With time, the hottest region falls and the warm region widens.</p></article>
+        <article><p class="eyebrow">What the mathematics sees</p><h2>Many modes become a temperature profile</h2><p>High-frequency modes describe sharp changes and fade quickly. Lower modes remain longer, making the profile smoother.</p></article>
+      </div>
+    </section>
+  </main>
+
+  <footer>
+    <p>Half-Range Fourier Series Capstone · Interactive educational model</p>
+    <a href="#overview">Project overview</a>
+  </footer>
+  <script src="app.js"></script>
+</body>
+</html>
