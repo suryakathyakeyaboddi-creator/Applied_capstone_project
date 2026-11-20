@@ -6,9 +6,7 @@ heat conduction.
 
 The project begins with the capstone example
 
-$$
-f(x) = x^2, \qquad 0 < x < \pi
-$$
+$$f(x) = x^2, \qquad 0 < x < \pi$$
 
 and makes the mathematics visible through live graphs, error measurements, a
 heat-conduction laboratory, and a daily-life hot-pan countertop scenario.
@@ -146,33 +144,21 @@ model used in the Heat Lab.
 
 The even extension of \(x^2\) gives
 
-$$
-x^2 = \frac{\pi^2}{3}
-+ 4\sum_{n=1}^{\infty}\frac{(-1)^n}{n^2}\cos(nx).
-$$
+$$x^2 = \frac{\pi^2}{3} + 4\sum_{n=1}^{\infty}\frac{(-1)^n}{n^2}\cos(nx).$$
 
 The N-term approximation is
 
-$$
-S_N^{\cos}(x)=\frac{\pi^2}{3}
-+ 4\sum_{n=1}^{N}\frac{(-1)^n}{n^2}\cos(nx).
-$$
+$$S_N^{\cos}(x)=\frac{\pi^2}{3} + 4\sum_{n=1}^{N}\frac{(-1)^n}{n^2}\cos(nx).$$
 
 ### Half-range sine series
 
 The odd extension gives
 
-$$
-S_N^{\sin}(x)=\sum_{n=1}^{N}b_n\sin(nx),
-$$
+$$S_N^{\sin}(x)=\sum_{n=1}^{N}b_n\sin(nx),$$
 
 where
 
-$$
-b_n=
-\frac{2\pi(-1)^{n+1}}{n}
-+\frac{4\left((-1)^n-1\right)}{\pi n^3}.
-$$
+$$b_n=\frac{2\pi(-1)^{n+1}}{n} +\frac{4\left((-1)^n-1\right)}{\pi n^3}.$$
 
 Every finite sine sum satisfies $S_N^{\sin}(\pi)=0$, while
 $f(\pi)=\pi^2$. This explains the persistent endpoint error.
@@ -181,33 +167,22 @@ $f(\pi)=\pi^2$. This explains the persistent endpoint error.
 
 For sampled positions $x_i$, the application calculates
 
-$$
-\operatorname{RMSE}=
-\sqrt{\frac{1}{M}\sum_{i=1}^{M}
-\left(f(x_i)-S_N(x_i)\right)^2}
-$$
+$$\mathrm{RMSE}=\sqrt{\frac{1}{M}\sum_{i=1}^{M}\left(f(x_i)-S_N(x_i)\right)^2}$$
 
 and
 
-$$
-E_{\max}=\max_i\left|f(x_i)-S_N(x_i)\right|.
-$$
+$$E_{\max}=\max_i\left|f(x_i)-S_N(x_i)\right|.$$
 
 ### Heat equation
 
 The simulation uses the one-dimensional heat equation
 
-$$
-\frac{\partial T}{\partial t}
-=\alpha\frac{\partial^2T}{\partial x^2}.
-$$
+$$\frac{\partial T}{\partial t}=\alpha\frac{\partial^2T}{\partial x^2}.$$
 
 For fixed-temperature ends, it uses sine modes. For insulated ends, it uses
 cosine modes. Each mode decays through
 
-$$
-e^{-\alpha(n\pi/L)^2t}.
-$$
+$$e^{-\alpha(n\pi/L)^2t}.$$
 
 Higher-frequency modes decay faster, so sharp temperature variations become
 smoother over time.
